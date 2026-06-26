@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joker Meme Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+      --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
+      --space-12: 3rem; --space-16: 4rem;
+      --color-bg: #f7f6f2; --color-surface: #f9f8f5; --color-surface-2: #fbfbf9;
+      --color-border: #d4d1ca; --color-text: #28251d; --color-text-muted: #66645f;
+      --color-primary: #01696f; --color-primary-hover: #0c4e54; --color-text-inverse: #f9f8f4;
+      --radius-sm: 0.375rem; --radius-md: 0.75rem; --radius-lg: 1rem; --radius-xl: 1.25rem;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.06); --shadow-md: 0 10px 30px rgba(0,0,0,.14);
+      --font-display: 'Anton', Impact, sans-serif; --font-body: 'Inter', system-ui, sans-serif;
+    }
+    [data-theme="dark"] {
+      --color-bg: #111113; --color-surface: #1a1a1f; --color-surface-2: #212129;
+      --color-border: #32323b; --color-text: #eeeeef; --color-text-muted: #aaaab3;
+      --color-primary: #6e63ff; --color-primary-hover: #594de6; --color-text-inverse: #f9f8f4;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.25); --shadow-md: 0 18px 44px rgba(0,0,0,.35);
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{-webkit-text-size-adjust:none;text-size-adjust:none;scroll-behavior:smooth}
+    body{margin:0;min-height:100dvh;font-family:var(--font-body);font-size:var(--text-base);background:radial-gradient(circle at top, rgba(110,99,255,.18), transparent 32%), var(--color-bg);color:var(--color-text);line-height:1.5}
+    img,canvas{display:block;max-width:100%;height:auto}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:1280px;margin:0 auto;padding:var(--space-6)}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);margin-bottom:var(--space-6)}
+    .brand{display:flex;align-items:center;gap:var(--space-3)}
+    .logo{width:40px;height:40px;color:var(--color-primary)}
+    .brand h1{margin:0;font-size:var(--text-lg);line-height:1.1}
+    .brand p{margin:0;color:var(--color-text-muted);font-size:var(--text-sm)}
+    .theme-toggle{min-width:44px;min-height:44px;border:1px solid var(--color-border);background:var(--color-surface);color:var(--color-text);border-radius:999px;padding:0 var(--space-4);box-shadow:var(--shadow-sm)}
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:var(--space-6)}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)), var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);box-shadow:var(--shadow-md)}
+    .canvas-panel{padding:var(--space-5)}
+    .canvas-wrap{background:#000;border-radius:calc(var(--radius-xl) - var(--space-5));overflow:hidden;position:relative}
+    canvas{width:100%;aspect-ratio:4/5;background:#000}
+    .badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-3);border-radius:999px;background:rgba(110,99,255,.14);color:var(--color-text);font-size:var(--text-xs);margin-bottom:var(--space-4)}
+    .controls{padding:var(--space-5);display:grid;gap:var(--space-5);align-content:start}
+    .section-title{margin:0 0 var(--space-3);font-size:var(--text-sm);text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-muted)}
+    .grid{display:grid;gap:var(--space-4)}
+    .two{grid-template-columns:1fr 1fr}
+    .field{display:grid;gap:var(--space-2)}
+    label{font-size:var(--text-sm);font-weight:600}
+    input[type="text"], textarea, select, input[type="range"]{width:100%}
+    input[type="text"], textarea, select{
+      min-height:44px;padding:0.85rem 1rem;border-radius:var(--radius-md);border:1px solid var(--color-border);
+      background:var(--color-surface-2);color:var(--color-text);
+    }
+    textarea{min-height:96px;resize:vertical}
+    input[type="range"]{accent-color:var(--color-primary)}
+    .range-readout{font-size:var(--text-xs);color:var(--color-text-muted);text-align:right}
+    .actions{display:flex;flex-wrap:wrap;gap:var(--space-3)}
+    .btn{min-height:44px;padding:0.9rem 1.1rem;border-radius:999px;border:1px solid transparent;font-weight:700}
+    .btn-primary{background:var(--color-primary);color:var(--color-text-inverse)}
+    .btn-primary:hover{background:var(--color-primary-hover)}
+    .btn-secondary{background:transparent;border-color:var(--color-border);color:var(--color-text)}
+    .notes{padding:var(--space-4);border:1px dashed var(--color-border);border-radius:var(--radius-lg);color:var(--color-text-muted);font-size:var(--text-sm)}
+    .footer-note{margin-top:var(--space-4);font-size:var(--text-xs);color:var(--color-text-muted)}
+    .swatches{display:flex;gap:var(--space-2);flex-wrap:wrap}
+    .swatch{width:32px;height:32px;border-radius:999px;border:2px solid rgba(255,255,255,.28)}
+    .swatch.active{outline:2px solid var(--color-text);outline-offset:2px}
+    @media (max-width: 980px){.hero{grid-template-columns:1fr}.app{padding:var(--space-4)}}
+  </style>
+</head>
+<body>
+  <a href="#main" style="position:absolute;left:-9999px;top:auto;">Salta al contenuto</a>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 64 64" fill="none" aria-label="Logo Joker Meme Generator">
+          <path d="M10 44C18 23 28 12 40 12C48 12 53 17 53 24C53 34 45 40 35 40C30 40 25 38 22 34C21 39 18 45 10 52" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="42" cy="24" r="3.5" fill="currentColor"/>
+        </svg>
+        <div>
+          <h1>Joker Meme Generator</h1>
+          <p>Lavora solo sulla foto allegata, senza upload esterni.</p>
+        </div>
+      </div>
+      <button class="theme-toggle" data-theme-toggle aria-label="Cambia tema">☾</button>
+    </header>
+
+    <main id="main" class="hero">
+      <section class="panel canvas-panel">
+        <div class="badge">Foto bloccata: assets/joker.jpg</div>
+        <div class="canvas-wrap">
+          <canvas id="memeCanvas" width="1080" height="1350" aria-label="Anteprima meme Joker"></canvas>
+        </div>
+        <p class="footer-note">Puoi scaricare il meme finale in PNG. L’immagine di base non può essere sostituita.</p>
+      </section>
+
+      <aside class="panel controls">
+        <section>
+          <h2 class="section-title">Testi</h2>
+          <div class="grid">
+            <div class="field">
+              <label for="topText">Testo sopra</label>
+              <textarea id="topText" placeholder="QUANDO IL CLIENTE DICE ‘È SOLO UNA PICCOLA MODIFICA’">QUANDO DICI CHE È SOLO UN BUG MINORE</textarea>
+            </div>
+            <div class="field">
+              <label for="bottomText">Testo sotto</label>
+              <textarea id="bottomText" placeholder="…E POI PRODUZIONE VA GIÙ">E POI SALTA TUTTA LA PRODUZIONE</textarea>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="section-title">Stile</h2>
+          <div class="grid two">
+            <div class="field">
+              <label for="fontSize">Dimensione testo</label>
+              <input id="fontSize" type="range" min="40" max="120" value="78" />
+              <div class="range-readout"><span id="fontSizeValue">78</span> px</div>
+            </div>
+            <div class="field">
+              <label for="strokeSize">Spessore bordo</label>
+              <input id="strokeSize" type="range" min="2" max="12" value="6" />
+              <div class="range-readout"><span id="strokeSizeValue">6</span> px</div>
+            </div>
+            <div class="field">
+              <label for="topOffset">Margine sopra</label>
+              <input id="topOffset" type="range" min="20" max="220" value="56" />
+              <div class="range-readout"><span id="topOffsetValue">56</span> px</div>
+            </div>
+            <div class="field">
+              <label for="bottomOffset">Margine sotto</label>
+              <input id="bottomOffset" type="range" min="20" max="220" value="70" />
+              <div class="range-readout"><span id="bottomOffsetValue">70</span> px</div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="section-title">Colori</h2>
+          <div class="field">
+            <label>Colore testo</label>
+            <div class="swatches" id="fillSwatches"></div>
+          </div>
+          <div class="field">
+            <label>Colore bordo</label>
+            <div class="swatches" id="strokeSwatches"></div>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="section-title">Azioni</h2>
+          <div class="actions">
+            <button class="btn btn-primary" id="downloadBtn">Scarica PNG</button>
+            <button class="btn btn-secondary" id="resetBtn">Reset</button>
+          </div>
+        </section>
+
+        <section class="notes">
+          Questo generatore accetta una sola immagine base: <strong>joker.jpg</strong>. Non ci sono upload, librerie online o URL esterni per cambiare foto.
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('memeCanvas');
+    const ctx = canvas.getContext('2d');
+    const image = new Image();
+    image.src = './assets/joker.jpg';
+
+    const topText = document.getElementById('topText');
+    const bottomText = document.getElementById('bottomText');
+    const fontSize = document.getElementById('fontSize');
+    const strokeSize = document.getElementById('strokeSize');
+    const topOffset = document.getElementById('topOffset');
+    const bottomOffset = document.getElementById('bottomOffset');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const defaults = {
+      topText: 'QUANDO DICI CHE È SOLO UN BUG MINORE',
+      bottomText: 'E POI SALTA TUTTA LA PRODUZIONE',
+      fontSize: 78,
+      strokeSize: 6,
+      topOffset: 56,
+      bottomOffset: 70,
+      fillColor: '#ffffff',
+      strokeColor: '#000000'
+    };
+
+    const palette = ['#ffffff','#ffe66d','#7ef9ff','#ff8bd1','#8dffb8','#ffb86b'];
+    let fillColor = defaults.fillColor;
+    let strokeColor = defaults.strokeColor;
+
+    function mountSwatches(containerId, selected, onPick) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      palette.concat(containerId === 'strokeSwatches' ? ['#000000','#4b0f1d','#2a1749'] : []).forEach(color => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'swatch' + (color === selected ? ' active' : '');
+        btn.style.background = color;
+        btn.setAttribute('aria-label', 'Seleziona colore ' + color);
+        btn.addEventListener('click', () => onPick(color));
+        container.appendChild(btn);
+      });
+    }
+
+    function syncReadouts() {
+      document.getElementById('fontSizeValue').textContent = fontSize.value;
+      document.getElementById('strokeSizeValue').textContent = strokeSize.value;
+      document.getElementById('topOffsetValue').textContent = topOffset.value;
+      document.getElementById('bottomOffsetValue').textContent = bottomOffset.value;
+    }
+
+    function fitText(text, maxWidth, startSize) {
+      let size = startSize;
+      do {
+        ctx.font = `800 ${size}px Anton, Impact, sans-serif`;
+        if (ctx.measureText(text).width <= maxWidth || size <= 28) break;
+        size -= 2;
+      } while (size > 28);
+      return size;
+    }
+
+    function wrapText(text, maxWidth, startSize) {
+      const words = text.trim().split(/\s+/).filter(Boolean);
+      if (!words.length) return { lines: [], size: startSize };
+      let size = startSize;
+      let lines = [];
+      while (size > 28) {
+        ctx.font = `800 ${size}px Anton, Impact, sans-serif`;
+        lines = [];
+        let line = '';
+        for (const word of words) {
+          const test = line ? `${line} ${word}` : word;
+          if (ctx.measureText(test).width <= maxWidth) {
+            line = test;
+          } else {
+            if (line) lines.push(line);
+            line = word;
+          }
+        }
+        if (line) lines.push(line);
+        const tooWide = lines.some(l => ctx.measureText(l).width > maxWidth);
+        if (!tooWide && lines.length <= 4) break;
+        size -= 2;
+      }
+      return { lines, size };
+    }
+
+    function drawBlock(lines, yStart, size, fromBottom = false) {
+      const lineHeight = size * 1.04;
+      const totalHeight = lineHeight * lines.length;
+      let y = fromBottom ? yStart - totalHeight + lineHeight : yStart;
+      ctx.textAlign = 'center';
+      ctx.lineJoin = 'round';
+      ctx.fillStyle = fillColor;
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = Number(strokeSize.value);
+      ctx.font = `800 ${size}px Anton, Impact, sans-serif`;
+      for (const line of lines) {
+        ctx.strokeText(line, canvas.width / 2, y);
+        ctx.fillText(line, canvas.width / 2, y);
+        y += lineHeight;
+      }
+    }
+
+    function drawCoverImage() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const imgRatio = image.width / image.height;
+      const canvasRatio = canvas.width / canvas.height;
+      let drawWidth, drawHeight, dx, dy;
+      if (imgRatio > canvasRatio) {
+        drawHeight = canvas.height;
+        drawWidth = drawHeight * imgRatio;
+        dx = (canvas.width - drawWidth) / 2;
+        dy = 0;
+      } else {
+        drawWidth = canvas.width;
+        drawHeight = drawWidth / imgRatio;
+        dx = 0;
+        dy = (canvas.height - drawHeight) / 2;
+      }
+      ctx.drawImage(image, dx, dy, drawWidth, drawHeight);
+      ctx.fillStyle = 'rgba(0,0,0,.14)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function render() {
+      if (!image.complete) return;
+      syncReadouts();
+      drawCoverImage();
+      ctx.textBaseline = 'top';
+      const safeWidth = canvas.width - 100;
+      const top = wrapText(topText.value.toUpperCase(), safeWidth, Number(fontSize.value));
+      const bottom = wrapText(bottomText.value.toUpperCase(), safeWidth, Number(fontSize.value));
+      drawBlock(top.lines, Number(topOffset.value), top.size, false);
+      drawBlock(bottom.lines, canvas.height - Number(bottomOffset.value), bottom.size, true);
+    }
+
+    function downloadPNG() {
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'joker-meme.png';
+      link.click();
+    }
+
+    function resetAll() {
+      topText.value = defaults.topText;
+      bottomText.value = defaults.bottomText;
+      fontSize.value = defaults.fontSize;
+      strokeSize.value = defaults.strokeSize;
+      topOffset.value = defaults.topOffset;
+      bottomOffset.value = defaults.bottomOffset;
+      fillColor = defaults.fillColor;
+      strokeColor = defaults.strokeColor;
+      refreshSwatches();
+      render();
+    }
+
+    function refreshSwatches() {
+      mountSwatches('fillSwatches', fillColor, (color) => { fillColor = color; refreshSwatches(); render(); });
+      mountSwatches('strokeSwatches', strokeColor, (color) => { strokeColor = color; refreshSwatches(); render(); });
+    }
+
+    [topText, bottomText, fontSize, strokeSize, topOffset, bottomOffset].forEach(el => el.addEventListener('input', render));
+    downloadBtn.addEventListener('click', downloadPNG);
+    resetBtn.addEventListener('click', resetAll);
+
+    const themeToggle = document.querySelector('[data-theme-toggle]');
+    let currentTheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    themeToggle.textContent = currentTheme === 'dark' ? '☀︎' : '☾';
+    themeToggle.addEventListener('click', () => {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      themeToggle.textContent = currentTheme === 'dark' ? '☀︎' : '☾';
+    });
+
+    image.onload = () => { refreshSwatches(); render(); };
+    image.onerror = () => {
+      ctx.fillStyle = '#111';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 42px Inter, sans-serif';
+      ctx.fillText('Impossibile caricare joker.jpg', 60, 80);
+    };
+  </script>
+</body>
+</html>
