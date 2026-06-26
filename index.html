@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Joker Meme Generator</title>
+  <title>Caos e Follia Meme Generator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -86,7 +86,7 @@
           <circle cx="42" cy="24" r="3.5" fill="currentColor"/>
         </svg>
         <div>
-          <h1>Joker Meme Generator</h1>
+          <h1>Caos e Follia Meme Generator</h1>
           <p>Lavora solo sulla foto allegata, senza upload esterni.</p>
         </div>
       </div>
@@ -95,7 +95,7 @@
 
     <main id="main" class="hero">
       <section class="panel canvas-panel">
-        <div class="badge">Foto bloccata: assets/joker.jpg</div>
+        <div class="badge">by Pavel Soloviev</div>
         <div class="canvas-wrap">
           <canvas id="memeCanvas" width="1080" height="1350" aria-label="Anteprima meme Joker"></canvas>
         </div>
@@ -174,7 +174,7 @@
     const canvas = document.getElementById('memeCanvas');
     const ctx = canvas.getContext('2d');
     const image = new Image();
-    image.src = './assets/joker.jpg';
+    image.src = 'https://github.com/PavelSoloviev89/memegen/blob/025e73134d908fd9b33f132a4cde59a42130ac1a/joker.jpeg';
 
     const topText = document.getElementById('topText');
     const bottomText = document.getElementById('bottomText');
